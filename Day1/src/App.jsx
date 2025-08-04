@@ -1,9 +1,10 @@
 //from internet/installation
-import React from "react";
+// import React from "react";
 import {createRoot} from "react-dom/client"
 
 //from local
 import Pet from "./Pet";
+import SearchParams from "./SearchParams";
 
 // const App = () => {
 //     return React.createElement(
@@ -36,9 +37,10 @@ const App = () => {
     return(
         <div>
             <h1>Element created by react</h1>
-            <Pet name="Buggs Bunny" animal="Rabbit" breed="White"/>
+            {/* <Pet name="Buggs Bunny" animal="Rabbit" breed="White"/>
             <Pet name="Peggy Pig" animal="Pig" breed="Boar Asian"/>
-            <Pet name="Luna Bunny" animal="Dog" breed="Havanese"/>
+            <Pet name="Luna Bunny" animal="Dog" breed="Havanese"/> */}
+            <SearchParams />
         </div>
     );
 };
@@ -46,4 +48,5 @@ const App = () => {
 const container = document.getElementById("root"); //<div id="root"></div>
 const root = createRoot(container); //ReactDOM.createRoot(div id="root" location)
 //root.render(React.createElement(App)); //render component App
-root.render(React.createElement(<App />)); //render component App
+//root.render(React.createElement(<App />)); //render component App
+root.render(<App />);
