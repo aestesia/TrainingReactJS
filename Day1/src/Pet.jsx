@@ -1,4 +1,5 @@
 //import React from "react";
+import { Link } from "react-router-dom";
 
 // const Pet = (props) => {
 //     return React.createElement("div", {}, [
@@ -8,14 +9,29 @@
 //     ]);
 // };
 
-const Pet = (props) =>{
-    return (
-    <div>
-        <h1>{props.name}</h1>
-        <h2>{props.animal}</h2>
-        <h2>{props.breed}</h2>
-    </div>
-    );
-}
+const Pet = (props) => {
+  const { name, animal, breed, city, state, images, id } = props; // deconstruct property
+
+  let defaultImage = "http://pets-images.dev-apis.com/pets/none.jpg";
+  // default image if doesn't have image
+
+  if (images.length) {
+    defaultImage = images[0];
+  }
+
+  return (
+    <Link to={`/details/${id}`} className="pet">
+      <div className="image-container">
+        <img src={defaultImage} alt={name} />
+      </div>
+      <div className="info">
+        <h1>{name}</h1>
+        <h2>
+          {animal}-{breed} {city}, {state}
+        </h2>
+      </div>
+    </Link>
+  );
+};
 
 export default Pet;

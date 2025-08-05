@@ -1,60 +1,88 @@
-import { useEffect, useState } from "react";
-import Pet from "./Pet";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+//import Pet from "./Pet";
 import useBreedList from "./useBreedList";
+import Results from "./result";
+import fetchSearch from "./fetchSearch";
 
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
-  const [location, setLocation] = useState("Seattle, WA");
+  //const [location, setLocation] = useState("Seattle, WA");
   const [animal, setAnimal] = useState("");
-  const [breed, setBreed] = useState("");
-  const [pets, setPets] = useState([]);
+  // const [breed, setBreed] = useState("");
+  // const [pets, setPets] = useState([]);
+  const [requestParams, setRequestParams] = useState({
+    location: "",
+    breed: "",
+    animal: "",
+  });
   // useState return two variables in array, where var 1 is the value and var 2 is the function to update the value
 
   //const breeds = [];
   const [breeds] = useBreedList(animal);
 
-  useEffect(() => {
-    requestPets();
-  }, []); // arg 1 -> callback function/method which want to use after web rendered for the first time; arg 2 (dependency) -> trigger
-  async function requestPets() {
-    const res = await fetch(
-      `https://pets-v2.dev-apis.com/pets?.animal=${animal}&location=${location}&breed=${breed}`
-    ); // this fetch will return a promise (pending -> connecting to server,
-    // fulfilled -> receive response from server, rejected -> failed to connect to server)
+  const results = useQuery(["search", requestParams], fetchSearch);
 
-    const json = await res.json();
+  const pets = results?.data?.pets ?? [];
 
-    setPets(json.pets);
-  }
+  // useEffect(() => {
+  //   requestPets();
+  // }, []); // arg 1 -> callback function/method which want to use after web rendered for the first time; arg 2 (dependency) -> trigger
+  // async function requestPets() {
+  //   const res = await fetch(
+  //     `https://pets-v2.dev-apis.com/pets?.animal=${animal}&location=${location}&breed=${breed}`
+  //   ); // this fetch will return a promise (pending -> connecting to server,
+  //   // fulfilled -> receive response from server, rejected -> failed to connect to server)
+
+  //   const json = await res.json();
+
+  //   setPets(json.pets);
+  // }
 
   //console.log("event in input: ", location);
 
   return (
     <div className="search-params">
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault(); //prevent reload and doesn't use the submit which provided by the form instead use the submit which created below
+          // requestPets();
+
+          const formData = new FormData(e.target);
+          const object = {
+            animal: formData.get("animal") ?? "",
+            breed: formData.get("breed") ?? "",
+            location: formData.get("location") ?? "",
+          };
+
+          setRequestParams(object);
+        }}
+      >
         <label htmlFor="location">
           Location
           <input
             type="text"
             id="location"
-            value={location}
+            //value={location}
+            name="location"
             placeholder="Location"
-            onChange={(e) => setLocation(e.target.value)}
+            //onChange={(e) => setLocation(e.target.value)}
           />
         </label>
         <label htmlFor="animal">
           Animal
           <select
             id="animal"
-            value={animal}
+            name="animal"
+            //value={animal}
             onChange={(e) => {
               setAnimal(e.target.value);
-              setBreed("");
+              //setBreed("");
             }}
             onBlur={(e) => {
               setAnimal(e.target.value);
-              setBreed("");
+              //setBreed("");
             }}
           >
             <option />
@@ -71,9 +99,9 @@ const SearchParams = () => {
             disabled={!breeds.length}
             name="breed"
             id="breed"
-            value={breed}
-            onChange={(e) => setBreed(e.target.value)}
-            onBlur={(e) => setBreed(e.target.value)}
+            //value={breed}
+            //onChange={(e) => setBreed(e.target.value)}
+            //onBlur={(e) => setBreed(e.target.value)}
           >
             <option />
             {breeds.map((breed) => (
@@ -85,7 +113,7 @@ const SearchParams = () => {
         </label>
         <button>Submit</button>
       </form>
-      {pets.map((pet) => {
+      {/* {pets.map((pet) => {
         return (
           <Pet
             name={pet.name}
@@ -94,7 +122,8 @@ const SearchParams = () => {
             key={pet.id}
           />
         );
-      })}
+      })} */}
+      <Results pets={pets} />
     </div>
   );
 };

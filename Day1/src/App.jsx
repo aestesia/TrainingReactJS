@@ -1,10 +1,22 @@
 //from internet/installation
 // import React from "react";
-import {createRoot} from "react-dom/client"
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 //from local
-import Pet from "./Pet";
+//import Pet from "./Pet";
 import SearchParams from "./SearchParams";
+import Details from "./Details";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  },
+});
 
 // const App = () => {
 //     return React.createElement(
@@ -16,33 +28,39 @@ import SearchParams from "./SearchParams";
 //             "Element created by react"
 //         ),
 //         React.createElement(Pet, {
-//             name:"Buggs Bunny", 
-//             animal:"Rabbit", 
+//             name:"Buggs Bunny",
+//             animal:"Rabbit",
 //             breed:"White"
 //         }),
 //         React.createElement(Pet, {
-//             name:"Peggy Pig", 
-//             animal:"Pig", 
+//             name:"Peggy Pig",
+//             animal:"Pig",
 //             breed:"Boar Asian"
 //         }),
 //         React.createElement(Pet, {
-//             name:"Luna", 
-//             animal:"Dog", 
+//             name:"Luna",
+//             animal:"Dog",
 //             breed:"Havanese"
 //         })]
 //     );
 // };
 
 const App = () => {
-    return(
-        <div>
-            <h1>Element created by react</h1>
-            {/* <Pet name="Buggs Bunny" animal="Rabbit" breed="White"/>
-            <Pet name="Peggy Pig" animal="Pig" breed="Boar Asian"/>
-            <Pet name="Luna Bunny" animal="Dog" breed="Havanese"/> */}
-            <SearchParams />
-        </div>
-    );
+  return (
+    <div>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <header>
+            <Link>Element created by react</Link>
+          </header>
+          <Routes>
+            <Route path="/" element={<SearchParams />} />
+            <Route path="/details/:id" element={<Details />} />
+          </Routes>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </div>
+  );
 };
 
 const container = document.getElementById("root"); //<div id="root"></div>
