@@ -7,15 +7,20 @@ import Carousel from "./Carousel";
 import fetchPet from "./fetchPet";
 import ErrorBoundary from "./ErrorBoundary";
 import AdoptedPetContext from "./AdoptedPetContext";
+import { PetAPIResponse } from "./APIResponsesTypes";
 
 const Details = () => {
   const { id } = useParams();
+  if(!id)
+    throw new Error("no Id included")
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const [, setAdoptedPet] = useContext(AdoptedPetContext);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-unsafe-assignment
+  const [_, setAdoptedPet] = useContext(AdoptedPetContext);
 
   // http://localhost:xxxx/details/:id
-  const results = useQuery(["details", id], fetchPet);
+  const results = useQuery<PetAPIResponse>(["details", id], fetchPet);
+  
 
   if (results.isLoading) {
     return (
@@ -25,7 +30,10 @@ const Details = () => {
     );
   }
 
-  const pet = results.data.pets[0];
+  const pet = results?.data?.pets[0];
+
+  if (!pet) 
+    throw new Error("pet tidak ditemukan!");
 
   return (
     <div className="details">
@@ -58,10 +66,10 @@ const Details = () => {
   );
 };
 
-export default function DetailsErrorBoundary(props) {
+export default function DetailsErrorBoundary() {
   return (
     <ErrorBoundary>
-      <Details {...props} />
+      <Details />
     </ErrorBoundary>
   );
 }

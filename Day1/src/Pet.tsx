@@ -9,7 +9,18 @@ import { Link } from "react-router-dom";
 //     ]);
 // };
 
-const Pet = (props) => {
+interface IProps {
+  name: string;
+  animal: string;
+  breed: string;
+  city: string;
+  state: string;
+  images: string[];
+  location: string;
+  id: number;
+}
+
+const Pet = (props: IProps) => {
   const { name, animal, breed, city, state, images, id } = props; // deconstruct property
 
   let defaultImage = "http://pets-images.dev-apis.com/pets/none.jpg";
